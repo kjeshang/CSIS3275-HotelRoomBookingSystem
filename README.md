@@ -1,2 +1,3 @@
 # CSIS3275-TermProject
-CSIS 3275 Term Project
+CSIS 3275 Term Project: Hotel Room Booking System </ br>
+Group: Heena Kashyap, Sukhleen Kaur, Sehajpreet Singh Kingra, Kunal Ajaykumar Jeshang
