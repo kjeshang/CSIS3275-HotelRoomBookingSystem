@@ -7,8 +7,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Control.GuestDB;
+import com.sun.org.apache.xerces.internal.impl.dv.xs.DateDV;
+
+import DAO.AdminDB;
+import DAO.GuestDB;
 import Model.Login;
+import UI.Admin.AdminGUI;
+import UI.Admin.AdminPortalGUI;
+import UI.Guest.GuestGUI;
 
 import java.awt.GridLayout;
 import java.awt.Color;
@@ -95,24 +101,25 @@ public class LoginGUI extends JFrame implements ActionListener {
 	}
 	
 	Login login;
-	GuestDB db = new GuestDB();
-	final String adminLogin = "admin";
-	final String adminPassword = "1234";
+	GuestDB guestDb = new GuestDB();
+	AdminDB adminDb = new AdminDB();
+	String adminUsername;
+	String adminPassword;
 	String guestUsername;
 	String guestPassword;
 	
-	@Override
+
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == Login_btnLogin) {
 			if(Login_rdbGuest.isSelected()) {
 				guestUsername = Login_txtUsername.getText().toString();
 				guestPassword = String.valueOf(Login_txtPassword.getPassword());
 				login = new Login(guestUsername,guestPassword);
-				boolean guestExists = db.checkIfExists(login.getUsername(),login.getPassword());
+				boolean guestExists = guestDb.checkIfExists(login.getUsername(),login.getPassword());
 				if(guestExists == false) {
 					int reply = JOptionPane.showConfirmDialog(null, "A guest with the given login information does not exist. Would you like to create a new guest account?", "New Guest", JOptionPane.YES_NO_OPTION);
 					if(reply == JOptionPane.YES_OPTION) {
-						db.insertGuestLogin(login);
+						guestDb.insertGuestLogin(login);
 						JOptionPane.showMessageDialog(null,login.toString(),"New Guest created!",JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
@@ -122,12 +129,23 @@ public class LoginGUI extends JFrame implements ActionListener {
 					new GuestGUI().setVisible(true);
 				}
 			}
-			else {
-				if(Login_txtUsername.getText().toString().equals(adminLogin) && String.valueOf(Login_txtPassword.getPassword()).equals(adminPassword)) {
-					JOptionPane.showMessageDialog(null,"Welcome Admin!");
+			// admin login part
+			if(Login_rdbAdmin.isSelected()) {
+				adminUsername = Login_txtUsername.getText().toString();
+				adminPassword = String.valueOf(Login_txtPassword.getPassword());
+				System.out.println(adminUsername+ "  "+ adminPassword);
+				login  = new Login(adminUsername,adminPassword);
+				boolean adminExists = adminDb.checkIfExists(login.getUsername());
+				System.out.println(adminExists);
+				if(adminExists) {
+					//JOptionPane.showMessageDialog(null,"Welcome Admin!");
 				}
 				else {
-					JOptionPane.showMessageDialog(null,"Invalid Admin login details.");
+					int reply = JOptionPane.showConfirmDialog(null, "An Admin with the given login information does not exist. Would you like to create a new Admin account?", "New Admin", JOptionPane.YES_NO_OPTION);
+					if(reply == JOptionPane.YES_OPTION) {
+						dispose();
+						new AdminGUI().setVisible(true);
+					}
 				}
 			}
 		}

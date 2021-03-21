@@ -8,4 +8,6 @@ public interface Details {
 	public final static double ACCOMODATION_COST = 50.00;
 	public final static int NUMPERSONS_LIMIT = 3;
 	public final static double NUMPERSONS_EXTRACHARGE = 10.00;
+	public final static Object[] COLUMNS = {"firstname","lastname","email","phone"};
+	public final static int PHONE_INDEX = 3;
 }

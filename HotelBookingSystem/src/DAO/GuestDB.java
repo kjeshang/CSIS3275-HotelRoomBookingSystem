@@ -1,17 +1,22 @@
-package Control;
+package DAO;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import com.mongodb.AggregationOptions;
 import com.mongodb.BasicDBObject;
+import com.mongodb.Cursor;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 import Model.Login;
 import Model.Guest.GuestBooking;
 import Model.Guest.GuestInfo;
 
 public class GuestDB extends Connection {
+	
 
 	@Override
 	public DBCollection getCollection(String collection) {
@@ -126,6 +131,26 @@ public class GuestDB extends Connection {
 		return guest;
 	}
 	
+	public Object[][] getBasicGuestInfo() {		
+		DBObject jsonRow;
+		DBCursor cursor = getCollection("Guest").find();
+		String[] columns = {"firstName","lastName","email","phone"};
+		int count = (int) getCollection("Guest").count();
+		Object[][] guestsBasicInfo = new Object[count][columns.length];
+		
+		for (int i = 0; cursor.hasNext(); i ++)
+		{
+			jsonRow = cursor.next();
+			System.out.println(jsonRow);
+			for (int j = 0; j < columns.length; j++)
+			{				
+				guestsBasicInfo[i][j] = jsonRow.get(columns[j]);		    
+			}	
+		}		
+		return guestsBasicInfo;
+	}
+
+	
 	private BasicDBObject getGuest(GuestInfo guestInfo) {
 		BasicDBObject andQuery = new BasicDBObject();
 	    List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
@@ -137,6 +162,64 @@ public class GuestDB extends Connection {
 	    return andQuery;
 	}
 	
+	public  DBObject[] searchGuest(Object phone) {
+		
+		DBObject[] result = new DBObject[2];
+		
+		BasicDBObject GuestInfoQuery = new BasicDBObject();
+		GuestInfoQuery.put("phone", phone);
+				
+        List<BasicDBObject> pipeline = Arrays.asList(
+                new BasicDBObject()
+                        .append("$group", new BasicDBObject()
+                                .append("_id", "$phone")
+                                .append("numPersons", new BasicDBObject()
+                                        .append("$first", "$booking.numPersons")
+                                )
+                                .append("roomType", new BasicDBObject()
+                                        .append("$first", "$booking.roomType")
+                                )
+                                .append("roomNumber", new BasicDBObject()
+                                        .append("$first", "$booking.roomNumber")
+                                )
+                                .append("checkInDate", new BasicDBObject()
+                                        .append("$first", "$booking.checkInDate")
+                                )
+                                .append("checkOutDate", new BasicDBObject()
+                                        .append("$first", "$booking.checkOutDate")
+                                )
+                                .append("lunchAndDinner", new BasicDBObject()
+                                        .append("$first", "$booking.lunchAndDinner")
+                                )
+                                .append("addAccomodations", new BasicDBObject()
+                                        .append("$first", "$booking.addAccomodations")
+                                )
+                                .append("lengthOfStay", new BasicDBObject()
+                                        .append("$first", "$booking.lengthOfStay")
+                                )
+                                .append("totalCost", new BasicDBObject()
+                                        .append("$first", "$booking.totalCost")
+                                )
+                        )
+        );
+		AggregationOptions options = AggregationOptions.builder().build();
+        
+		//get Guest personal info
+		Cursor cursor = getCollection("Guest").find(GuestInfoQuery);
+		result[0] = cursor.next();
+		
+		//get Guest booking info
+		cursor =  getCollection("Guest").aggregate(pipeline, options);
+		result[1] = cursor.next();
+		
+		return result;
+	}
 	
-	
+	public void deleteRecord(String phone) {
+		
+		BasicDBObject deletequery = new BasicDBObject();
+		deletequery.put("phone", phone);		
+		getCollection("Guest").remove(deletequery);
+	}
+		
 }

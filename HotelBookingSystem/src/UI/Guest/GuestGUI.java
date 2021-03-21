@@ -1,4 +1,4 @@
-package UI;
+package UI.Guest;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -8,11 +8,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
-import Control.Connection;
-import Control.GuestDB;
 import Model.Details;
 import Model.Guest.GuestBooking;
 import Model.Guest.GuestInfo;
+import UI.LoginGUI;
 
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -35,10 +34,19 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.JSpinner;
 import javax.swing.JComboBox;
-import com.toedter.calendar.JDateChooser;
+
+
+
 import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
 import javax.swing.border.TitledBorder;
+
+import com.toedter.calendar.JDateChooser;
+
+import DAO.Connection;
+import DAO.GuestDB;
+
+import javax.swing.JDesktopPane;
 
 @SuppressWarnings({ "serial", "unused" })
 public class GuestGUI extends JFrame implements ActionListener,Details {
@@ -166,6 +174,7 @@ public class GuestGUI extends JFrame implements ActionListener,Details {
 		Guest_btnConfirm.setBounds(148, 264, 117, 29);
 		contentPane.add(Guest_btnConfirm);
 		Guest_btnConfirm.addActionListener(this);
+		
 		// ************************ GuestBooking *********************************
 		// Guest_lblBooking
 		Guest_lblBooking = new JLabel("Guest Booking");
@@ -239,6 +248,10 @@ public class GuestGUI extends JFrame implements ActionListener,Details {
 		Guest_btnBookRoom = new JButton("Book Room");
 		Guest_btnBookRoom.setBounds(188, 635, 117, 29);
 		contentPane.add(Guest_btnBookRoom);
+		
+		JDesktopPane desktopPane = new JDesktopPane();
+		desktopPane.setBounds(181, 19, 1, 1);
+		contentPane.add(desktopPane);
 		Guest_btnBookRoom.setVisible(false);
 		Guest_btnBookRoom.addActionListener(this);
 		// **** VISIBILITY ****
@@ -272,7 +285,6 @@ public class GuestGUI extends JFrame implements ActionListener,Details {
 	GuestBooking guestBooking;
 	GuestDB db = new GuestDB();
 	
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		// Confirm Button:
 		if(e.getSource() == Guest_btnConfirm) {
