@@ -17,6 +17,7 @@ import UI.Admin.AdminPortalGUI;
 import UI.Guest.GuestGUI;
 
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -139,6 +140,8 @@ public class LoginGUI extends JFrame implements ActionListener {
 				System.out.println(adminExists);
 				if(adminExists) {
 					//JOptionPane.showMessageDialog(null,"Welcome Admin!");
+					dispose();
+					new AdminPortalGUI().setVisible(true);
 				}
 				else {
 					int reply = JOptionPane.showConfirmDialog(null, "An Admin with the given login information does not exist. Would you like to create a new Admin account?", "New Admin", JOptionPane.YES_NO_OPTION);

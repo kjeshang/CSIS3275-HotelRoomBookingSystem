@@ -1,5 +1,6 @@
 package UI.Admin;
 
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -18,6 +19,8 @@ import Model.Guest.GuestInfo;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.awt.event.ActionEvent;
@@ -25,6 +28,7 @@ import javax.swing.JScrollPane;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 
@@ -33,29 +37,19 @@ import javax.swing.JCheckBox;
 
 import javax.swing.JTextArea;
 
-public class AdminPortalGUI {
 
-	private JFrame Admin_portalframe;
-	private JTable queryOutputTbl;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AdminPortalGUI window = new AdminPortalGUI();
-					window.Admin_portalframe.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+import com.toedter.calendar.JDateChooser;
 
+import DAO.GuestDB;
+import Model.Guest.GuestBooking;
+import Model.Guest.GuestInfo;
 
+public class AdminPortalGUI extends JFrame {
 
+	private JPanel contentPane;
 	GuestInfo guestInfo;
 	GuestBooking guestBooking;
 	GuestDB db = new GuestDB();
@@ -98,21 +92,19 @@ public class AdminPortalGUI {
 	private JLabel accomadationlbl;
 	private JTextArea additionaltxt;
 	private JButton confirmbtn;
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	private JTable queryOutputTbl;
 	
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initialize() {
-		Admin_portalframe = new JFrame();
-		Admin_portalframe.setTitle("Admin Portal");
-		Admin_portalframe.setBounds(100, 100, 684, 516);
-		Admin_portalframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		Admin_portalframe = new JFrame();
+//		Admin_portalframe.setTitle("Admin Portal");
+//		Admin_portalframe.setBounds(100, 100, 684, 516);
+//		Admin_portalframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(6, 68, 475, 104);
-		Admin_portalframe.getContentPane().add(scrollPane);
+		contentPane.add(scrollPane);
 		
 		queryOutputTbl = new JTable();
 		scrollPane.setViewportView(queryOutputTbl);
@@ -121,53 +113,53 @@ public class AdminPortalGUI {
 		searchCriterialbl.setBounds(34, 6, 605, 16);
 		searchCriterialbl.setHorizontalTextPosition(SwingConstants.CENTER);
 		searchCriterialbl.setHorizontalAlignment(SwingConstants.CENTER);
-		Admin_portalframe.getContentPane().add(searchCriterialbl);
+		contentPane.add(searchCriterialbl);
 		
 		firstnamelbl = new JLabel("First Name");
 		firstnamelbl.setBounds(6, 212, 77, 16);
-		Admin_portalframe.getContentPane().add(firstnamelbl);
+		contentPane.add(firstnamelbl);
 		
 		firstNametxt = new JTextField();
 		firstNametxt.setBounds(83, 207, 130, 26);
 		firstNametxt.setColumns(10);
-		Admin_portalframe.getContentPane().add(firstNametxt);
+		contentPane.add(firstNametxt);
 		
 		phonelbl = new JLabel("Phone");
 		phonelbl.setBounds(225, 212, 61, 16);
-		Admin_portalframe.getContentPane().add(phonelbl);
+		contentPane.add(phonelbl);
 		
 		phonetxt = new JTextField();
 		phonetxt.setBounds(271, 207, 130, 26);
 		phonetxt.setColumns(10);
-		Admin_portalframe.getContentPane().add(phonetxt);
+		contentPane.add(phonetxt);
 		
 		lastNamelbl = new JLabel("Last Name");
 		lastNamelbl.setBounds(6, 241, 77, 16);
-		Admin_portalframe.getContentPane().add(lastNamelbl);
+		contentPane.add(lastNamelbl);
 		
 		lastNametxt = new JTextField();
 		lastNametxt.setBounds(83, 236, 130, 26);
 		lastNametxt.setColumns(10);
-		Admin_portalframe.getContentPane().add(lastNametxt);
+		contentPane.add(lastNametxt);
 		
 		emaillbl = new JLabel("Email");
 		emaillbl.setBounds(225, 240, 61, 16);
-		Admin_portalframe.getContentPane().add(emaillbl);
+		contentPane.add(emaillbl);
 		
 		emailtxt = new JTextField();
 		emailtxt.setBounds(271, 235, 130, 26);
 		emailtxt.setColumns(10);
-		Admin_portalframe.getContentPane().setLayout(null);
-		Admin_portalframe.getContentPane().add(emailtxt);
+		contentPane.setLayout(null);
+		contentPane.add(emailtxt);
 		
 		searchtxt = new JTextField();
 		searchtxt.setBounds(6, 34, 181, 26);
-		Admin_portalframe.getContentPane().add(searchtxt);
+		contentPane.add(searchtxt);
 		searchtxt.setColumns(10);
 		
 		searchFilterBox = new JComboBox();
 		searchFilterBox.setBounds(199, 35, 147, 27);
-		Admin_portalframe.getContentPane().add(searchFilterBox);
+		contentPane.add(searchFilterBox);
 		searchFilterBox.addItem("None");
 		for(int i = 0; i < Details.COLUMNS.length; i++) {
 			searchFilterBox.addItem(Details.COLUMNS[i]);
@@ -180,98 +172,98 @@ public class AdminPortalGUI {
 			}
 		});
 		newGuestbtn.setBounds(493, 143, 117, 29);
-		Admin_portalframe.getContentPane().add(newGuestbtn);
+		contentPane.add(newGuestbtn);
 		
 		nationalitylbl = new JLabel("Nationality");
 		nationalitylbl.setBounds(413, 212, 77, 16);
-		Admin_portalframe.getContentPane().add(nationalitylbl);
+		contentPane.add(nationalitylbl);
 		
 		purpose_Of_Staylbl = new JLabel("Purpose Of Stay");
 		purpose_Of_Staylbl.setBounds(413, 241, 99, 16);
-		Admin_portalframe.getContentPane().add(purpose_Of_Staylbl);
+		contentPane.add(purpose_Of_Staylbl);
 		
 		nationalitytxt = new JTextField();
 		nationalitytxt.setBounds(524, 207, 130, 26);
-		Admin_portalframe.getContentPane().add(nationalitytxt);
+		contentPane.add(nationalitytxt);
 		nationalitytxt.setColumns(10);
 		
 		purposeOfStaytxt = new JTextField();
 		purposeOfStaytxt.setBounds(524, 236, 130, 26);
-		Admin_portalframe.getContentPane().add(purposeOfStaytxt);
+		contentPane.add(purposeOfStaytxt);
 		purposeOfStaytxt.setColumns(10);
 		
 		guestInfolbl = new JLabel("Guest Info");
 		guestInfolbl.setBounds(8, 186, 86, 16);
-		Admin_portalframe.getContentPane().add(guestInfolbl);
+		contentPane.add(guestInfolbl);
 		
 		addresslbl = new JLabel("Address");
 		addresslbl.setBounds(6, 272, 61, 16);
-		Admin_portalframe.getContentPane().add(addresslbl);
+		contentPane.add(addresslbl);
 		
 		addresstxt = new JTextField();
 		addresstxt.setBounds(83, 267, 318, 26);
-		Admin_portalframe.getContentPane().add(addresstxt);
+		contentPane.add(addresstxt);
 		addresstxt.setColumns(10);
 		
 		guestBookinglbl = new JLabel("Guest Booking Information");
 		guestBookinglbl.setBounds(6, 300, 181, 16);
-		Admin_portalframe.getContentPane().add(guestBookinglbl);
+		contentPane.add(guestBookinglbl);
 		
 		numOfPersonslbl = new JLabel("Number Of Persons");
 		numOfPersonslbl.setBounds(6, 328, 130, 16);
-		Admin_portalframe.getContentPane().add(numOfPersonslbl);
+		contentPane.add(numOfPersonslbl);
 		
 		numOfPersonspinner = new JSpinner();
 		numOfPersonspinner.setBounds(140, 323, 47, 26);
-		Admin_portalframe.getContentPane().add(numOfPersonspinner);
+		contentPane.add(numOfPersonspinner);
 		
 		JLabel roomTypelbl = new JLabel("Room Type");
 		roomTypelbl.setBounds(199, 328, 77, 16);
-		Admin_portalframe.getContentPane().add(roomTypelbl);
+		contentPane.add(roomTypelbl);
 		
 		roomTypeBox = new JComboBox();
 		roomTypeBox.setBounds(271, 324, 130, 27);
-		Admin_portalframe.getContentPane().add(roomTypeBox);
+		contentPane.add(roomTypeBox);
 		for(int i = 0; i < Details.ROOM_TYPE.length; i++) {
 			roomTypeBox.addItem(Details.ROOM_TYPE[i]);
 		}
 		
 		roomNumberlbl = new JLabel("Room Number");
 		roomNumberlbl.setBounds(413, 328, 99, 16);
-		Admin_portalframe.getContentPane().add(roomNumberlbl);
+		contentPane.add(roomNumberlbl);
 		
 		roomNumbertxt = new JTextField();
 		roomNumbertxt.setBounds(524, 323, 130, 26);
-		Admin_portalframe.getContentPane().add(roomNumbertxt);
+		contentPane.add(roomNumbertxt);
 		roomNumbertxt.setColumns(10);
 		
 		checkInlbl = new JLabel("Check In Date");
 		checkInlbl.setBounds(6, 361, 99, 16);
-		Admin_portalframe.getContentPane().add(checkInlbl);
+		contentPane.add(checkInlbl);
 		
 		dateCheckIn = new JDateChooser();
 		dateCheckIn.setBounds(106, 356, 149, 26);
-		Admin_portalframe.getContentPane().add(dateCheckIn);
+		contentPane.add(dateCheckIn);
 		
 		dateCheckOutlbl = new JLabel("Check Out Date");
 		dateCheckOutlbl.setBounds(271, 361, 109, 16);
-		Admin_portalframe.getContentPane().add(dateCheckOutlbl);
+		contentPane.add(dateCheckOutlbl);
 		
 		dateCheckOut = new JDateChooser();
 		dateCheckOut.setBounds(392, 356, 149, 26);
-		Admin_portalframe.getContentPane().add(dateCheckOut);
+		contentPane.add(dateCheckOut);
 		
 		lunchDinnerChkBox = new JCheckBox("Lunch & Dinner");
 		lunchDinnerChkBox.setBounds(548, 357, 130, 23);
-		Admin_portalframe.getContentPane().add(lunchDinnerChkBox);
+		contentPane.add(lunchDinnerChkBox);
 		
 		accomadationlbl = new JLabel("Additional Accomadation");
 		accomadationlbl.setBounds(6, 389, 167, 16);
-		Admin_portalframe.getContentPane().add(accomadationlbl);
+		contentPane.add(accomadationlbl);
 		
 		additionaltxt = new JTextArea();
 		additionaltxt.setBounds(6, 417, 358, 64);
-		Admin_portalframe.getContentPane().add(additionaltxt);
+		contentPane.add(additionaltxt);
 		
 		deletebtn = new JButton("Delete Guest");
 		deletebtn.addActionListener(new ActionListener() {
@@ -280,18 +272,23 @@ public class AdminPortalGUI {
 			}
 		});
 		deletebtn.setBounds(493, 113, 117, 29);
-		Admin_portalframe.getContentPane().add(deletebtn);
+		contentPane.add(deletebtn);
 		
 		confirmbtn = new JButton("Confirm");
 		confirmbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				db.deleteRecord(phonetxt.getText());
-				db.insertGuest(guest(), booking());
+				if(checkDate()) {
+					db.deleteRecord(phonetxt.getText());
+					db.insertGuest(guest(), booking());
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Please mention Check In and Check Out dates");
+				}
+
 			}
 		});
 		confirmbtn.setBounds(422, 417, 217, 38);
-		Admin_portalframe.getContentPane().add(confirmbtn);
+		contentPane.add(confirmbtn);
 		
 		searchBtn = new JButton("Search");
 		searchBtn.addActionListener(new ActionListener() {
@@ -300,7 +297,7 @@ public class AdminPortalGUI {
 			}
 		});
 		searchBtn.setBounds(358, 34, 117, 29);
-		Admin_portalframe.getContentPane().add(searchBtn);
+		contentPane.add(searchBtn);
 		
 		editbtn = new JButton("Edit Info");
 		editbtn.addActionListener(new ActionListener() {
@@ -312,63 +309,85 @@ public class AdminPortalGUI {
 			}
 		});
 		editbtn.setBounds(493, 83, 117, 29);
-		Admin_portalframe.getContentPane().add(editbtn);
+		contentPane.add(editbtn);
 	}
-	
+
 	/**
-	 * Create the application.
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					AdminPortalGUI frame = new AdminPortalGUI();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
 	 */
 	public AdminPortalGUI() {
+		setTitle("Admin Portal");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 666, 518);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
+		setContentPane(contentPane);
 		initialize();
 	}
 	
-	
 	public void searchandAddtoTable() {
 		
-			DefaultTableModel model = new DefaultTableModel();
-			Object[][] rows = db.getBasicGuestInfo();
-			
-			for (int i = 0; i< Details.COLUMNS.length; i ++)
-			{
-				model.addColumn(Details.COLUMNS[i]);
+		DefaultTableModel model = new DefaultTableModel();
+		Object[][] rows = db.getBasicGuestInfo();
+		
+		for (int i = 0; i< Details.COLUMNS.length; i ++)
+		{
+			model.addColumn(Details.COLUMNS[i]);
 
-			}
-			int searchIndex = -1;
-			String searchObject = searchtxt.getText().toString();
-			
-			if(searchObject != null || searchObject != "")
-			{
-				if(searchFilterBox.getSelectedItem() == "firstname") {
-					searchIndex = 0;
-				}else if (searchFilterBox.getSelectedItem() == "lastname") {
-					searchIndex = 1;
-					
-				}else if (searchFilterBox.getSelectedItem() == "email") {
-					searchIndex = 2;
-					
-				}else if (searchFilterBox.getSelectedItem() == "phone") {
-					searchIndex = 3;	
-				}else {
-					searchIndex =-1;
-				}
-			}	
-			for(int i=0; i < rows.length;i++)
-			{
-				if(searchIndex == -1)
-				{
-					model.addRow(rows[i]);	
-				}
-				else if (rows[i][searchIndex].equals(searchObject))
-				{
-					model.addRow(rows[i]);
-				}
-			}			
-			queryOutputTbl.setModel(model);
 		}
-	
+		int searchIndex = -1;
+		String searchObject = searchtxt.getText().toString();
+		
+		if(searchObject != null || searchObject != "")
+		{
+			if(searchFilterBox.getSelectedItem() == "firstname") {
+				searchIndex = 0;
+			}else if (searchFilterBox.getSelectedItem() == "lastname") {
+				searchIndex = 1;
+				
+			}else if (searchFilterBox.getSelectedItem() == "email") {
+				searchIndex = 2;
+				
+			}else if (searchFilterBox.getSelectedItem() == "phone") {
+				searchIndex = 3;	
+			}else {
+				searchIndex =-1;
+			}
+		}	
+		for(int i=0; i < rows.length;i++)
+		{
+			if(searchIndex == -1)
+			{
+				model.addRow(rows[i]);	
+			}
+			else if (rows[i][searchIndex].equals(searchObject))
+			{
+				model.addRow(rows[i]);
+			}
+		}			
+		queryOutputTbl.setModel(model);
+	}
+
 	public void printInfo(DBObject[] row) {
 		
-//		DBObject bookinginfo = row.get("booking");
+	//	DBObject bookinginfo = row.get("booking");
 		
 		firstNametxt.setText(row[0].get("firstName").toString());
 		lastNametxt.setText(row[0].get("lastName").toString());
@@ -385,11 +404,21 @@ public class AdminPortalGUI {
 		else
 			lunchDinnerChkBox.setSelected(false);
 		additionaltxt.setText(row[1].get("addAccomodations").toString());
-		dateCheckIn.setDate((Date)row[1].get("checkInDate"));
-		dateCheckOut.setDate((Date)row[1].get("checkOutDate"));
-
+	
+	//	try {
+	//		Date CheckIndate;
+	//		CheckIndate = new SimpleDateFormat("dd-MM-yyyy").parse((String) row[1].get("checkInDate"));
+	//		dateCheckIn.setDate(CheckIndate);
+	//		Date CheckOutdate = new SimpleDateFormat("dd-MM-yyyy").parse((String) row[1].get("checkOutDate"));
+	//		dateCheckOut.setDate(CheckOutdate);
+	//	} catch (ParseException e) {
+	//		// TODO Auto-generated catch block
+	//		e.printStackTrace();
+	//	}
 		
-//		roomNumbertxt.setText(row.get("roomNumber").toString());
+	
+		
+	//	roomNumbertxt.setText(row.get("roomNumber").toString());
 		
 		
 	}
@@ -403,6 +432,7 @@ public class AdminPortalGUI {
 		String nationality = nationalitytxt.getText().toString();
 		String purposeOfStay = purposeOfStaytxt.getText().toString();
 		GuestInfo guestInfo = new GuestInfo(firstName,lastName,address,email,phone,nationality,purposeOfStay);
+		System.out.print(guestInfo);
 		return guestInfo;
 	}
 	
@@ -436,4 +466,17 @@ public class AdminPortalGUI {
 		return searchPhoneString;
 		
 	}
-}
+	
+	private boolean checkDate() {
+		
+		if(dateCheckIn.getDate() == null || dateCheckOut.getDate() == null)
+		{
+			return false;
+		}
+		else {
+			return true;
+		}
+		
+	}
+	
+	}
