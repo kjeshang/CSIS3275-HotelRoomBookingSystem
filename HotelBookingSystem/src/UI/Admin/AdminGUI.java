@@ -20,6 +20,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -125,7 +127,7 @@ public class AdminGUI extends JFrame implements ActionListener,Details {
 		contentPane.add(Admin_lblEmail);
 		// Admin_txtEmail
 		Admin_txtEmail = new JTextField();
-		Admin_txtEmail.setBounds(120, 147, 210, 26);
+		Admin_txtEmail.setBounds(120, 175, 130, 26);
 		contentPane.add(Admin_txtEmail);
 		Admin_txtEmail.setColumns(10);
 		// Admin_lblPhone
@@ -134,7 +136,7 @@ public class AdminGUI extends JFrame implements ActionListener,Details {
 		contentPane.add(Admin_lblPhone);
 		// Admin_txtPhone
 		Admin_txtPhone = new JTextField();
-		Admin_txtPhone.setBounds(120, 175, 130, 26);
+		Admin_txtPhone.setBounds(120, 147, 210, 26);
 		contentPane.add(Admin_txtPhone);
 		Admin_txtPhone.setColumns(10);
 		//Admin_Loginlbl
@@ -175,8 +177,28 @@ public class AdminGUI extends JFrame implements ActionListener,Details {
 		contentPane.add(Admin_btnConfirm);
 		Admin_btnConfirm.addActionListener(this);
 		
+		
+		Admin_txtFirstName.addKeyListener(new KeyAdapter(){
+            public void keyTyped(KeyEvent e){
+                char ch = e.getKeyChar();
+                if(!Character.isLetter(ch)){
+                	e.consume();
+                }
+            }
+        });
+		Admin_txtLastName.addKeyListener(new KeyAdapter(){
+            public void keyTyped(KeyEvent e){
+                char ch = e.getKeyChar();
+                if(!Character.isLetter(ch)){
+                	e.consume();
+                }
+            }
+        });
+		
 		JDesktopPane desktopPane = new JDesktopPane();
 		desktopPane.setBounds(181, 19, 1, 1);
+		
+		
 		contentPane.add(desktopPane);
 		
 
@@ -206,8 +228,11 @@ public class AdminGUI extends JFrame implements ActionListener,Details {
 				adminInfo = admin();
 				if(adminInfo.validInfo() == false) {
 					JOptionPane.showMessageDialog(null, "Please provide in all requested information.");
-				}
-				else {
+				}else if(!adminInfo.validatePhone(adminInfo.getPhone())) {
+					JOptionPane.showMessageDialog(null, "Please enter a valid phone number.");
+				}else if(!adminInfo.validateEmail(adminInfo.getEmail())) {
+					JOptionPane.showMessageDialog(null, "Please enter a valid email address.");
+				}else{
 					int reply1 = JOptionPane.showConfirmDialog(null, adminInfo.toString(), "Please confirm your information", JOptionPane.YES_NO_OPTION);
 					if(reply1 == JOptionPane.YES_OPTION) {
 						db.insertAdmin(adminInfo);

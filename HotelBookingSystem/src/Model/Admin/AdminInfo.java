@@ -1,5 +1,8 @@
 package Model.Admin;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class AdminInfo {
 	private String firstName;
 	private String lastName;
@@ -80,6 +83,28 @@ public class AdminInfo {
 			status = true;
 		}
 		return status;
+	}
+	
+	public boolean validatePhone(String number) {
+		boolean status = true;
+		String regex = "[0-9]+";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(number);
+        status =  m.matches();
+        return status;
+	}
+	
+	public boolean validateEmail(String email) {
+		boolean status = true;
+		String regex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(email);
+        status =  m.matches();
+        
+        return status;
 	}
 
 	@Override

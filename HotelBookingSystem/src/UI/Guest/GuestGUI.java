@@ -17,6 +17,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -249,6 +251,25 @@ public class GuestGUI extends JFrame implements ActionListener,Details {
 		Guest_btnBookRoom.setBounds(188, 635, 117, 29);
 		contentPane.add(Guest_btnBookRoom);
 		
+		
+		Guest_txtFirstName.addKeyListener(new KeyAdapter(){
+            public void keyTyped(KeyEvent e){
+                char ch = e.getKeyChar();
+                if(!Character.isLetter(ch)){
+                	e.consume();
+                }
+            }
+        });
+		
+		Guest_txtLastName.addKeyListener(new KeyAdapter(){
+            public void keyTyped(KeyEvent e){
+                char ch = e.getKeyChar();
+                if(!Character.isLetter(ch)){
+                	e.consume();
+                }
+            }
+        });
+		
 		JDesktopPane desktopPane = new JDesktopPane();
 		desktopPane.setBounds(181, 19, 1, 1);
 		contentPane.add(desktopPane);
@@ -291,8 +312,11 @@ public class GuestGUI extends JFrame implements ActionListener,Details {
 			guestInfo = guest();
 			if(guestInfo.validInfo() == false) {
 				JOptionPane.showMessageDialog(null, "Please provide in all requested information.");
-			}
-			else {
+			}else if(!guestInfo.validatePhone(guestInfo.getPhone())) {
+				JOptionPane.showMessageDialog(null, "Please enter a valid phone number.");
+			}else if(!guestInfo.validateEmail(guestInfo.getEmail())) {
+				JOptionPane.showMessageDialog(null, "Please enter a valid email address.");
+			}else {
 				int reply1 = JOptionPane.showConfirmDialog(null, guestInfo.toString(), "Please confirm your information", JOptionPane.YES_NO_OPTION);
 				if(reply1 == JOptionPane.YES_OPTION) {
 					setVisibility(true);
