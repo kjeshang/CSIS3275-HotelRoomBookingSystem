@@ -77,34 +77,67 @@ public class GuestInfo {
 		if(getFirstName().equals("") || getLastName().equals("") || getAddress().equals("") || getEmail().equals("") || getPhone().equals("") || getNationality().equals("") || getPurposeOfStay().equals("")) {
 			status = false;
 		}
+		else if(checkEmail() == false || checkPhone() == false) {
+			status = false;
+		}
 		else {
 			status = true;
 		}
 		return status;
 	}
+	
+	private boolean checkEmail() {
+//		boolean status = false;
+		boolean status = true;
+		if(getEmail().length() < 3) {
+			status = false;
+		}
+		else {
+			if(!getEmail().endsWith(".com") && !getEmail().endsWith(".ca")) {
+				status = false;
+			}
+			else {
+				String regex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+		                "[a-zA-Z0-9_+&*-]+)*@" +
+		                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+		                "A-Z]{2,7}$";
+		        Pattern p = Pattern.compile(regex);
+		        Matcher m = p.matcher(getEmail());
+		        status =  m.matches();
+//				if(!getEmail().contains("@")) {
+//					status = false;
+//				}
+//				else {
+//					status = true;
+//				}
+			}
+		}
+		return status;
+	}
+	
+	private boolean checkPhone() {
+		boolean status = true;
+		if(getPhone().length() < 10) {
+			status = false;
+		}
+		else {
+			String regex = "[0-9]+";
+	        Pattern p = Pattern.compile(regex);
+	        Matcher m = p.matcher(getPhone());
+	        status =  m.matches();
+//			for(int i = 0; i < getPhone().length(); i++) {
+//				char ch = getPhone().charAt(i);
+//				if(!Character.isDigit(ch)) {
+//					status = false;
+//				}
+//				else {
+//					status = true;
+//				}
+//			}
+		}
+		return status;
+	}
 
-	public boolean validatePhone(String number) {
-		boolean status = true;
-		String regex = "[0-9]+";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(number);
-        status =  m.matches();
-        return status;
-	}
-	
-	public boolean validateEmail(String email) {
-		boolean status = true;
-		String regex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(email);
-        status =  m.matches();
-        
-        return status;
-	}
-	
 	@Override
 	public String toString() {
 		return "First Name: " + getFirstName() + "\n" +

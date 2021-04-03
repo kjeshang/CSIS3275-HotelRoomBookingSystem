@@ -92,21 +92,19 @@ public class GuestBooking implements Details {
 		this.lengthOfStay = calculateLengthOfStay();
 	}
 	
-	public double getTotalCost() {
-		return totalCost;
-	}
-	public void setTotalCost() {
-		this.totalCost = calculateTotalCost();
-	}
-	
-	// ***************************************************************
-	
 	private int calculateLengthOfStay() {
 		long daysBetween = ChronoUnit.DAYS.between(getCheckInDate(), getCheckOutDate()); 
 		int days = (int) daysBetween; 
 		return days;
 	}
 	
+	public double getTotalCost() {
+		return totalCost;
+	}
+	public void setTotalCost() {
+		this.totalCost = calculateTotalCost();
+	}
+		
 	private double calculateTotalCost() {
 		double perDayCost = 0;
 		double totalCost = 0;
@@ -127,6 +125,39 @@ public class GuestBooking implements Details {
 		}
 		totalCost = perDayCost * getLengthOfStay();
 		return totalCost;
+	}
+	
+	// ***************************************************************
+	
+	public boolean validBooking() {
+		boolean status = false;
+		if(getNumPersons() < 1 || getLengthOfStay() <= 0 || checkRoomTypeAndNumber() == false) {
+			status = false;
+		}
+		else {
+			status = true;
+		}
+		return status;
+	}
+	
+	private boolean checkRoomTypeAndNumber() {
+		boolean status = false;
+		if(getRoomNumber() < 1) {
+			status = false;
+		}
+		else {
+			for(int i = 0; i < ROOM_TYPE.length; i++) {
+				if(getRoomType().equals(ROOM_TYPE[i])) {
+					if(getRoomNumber() < ROOM_NUMBERS[i][0] || getRoomNumber() > ROOM_NUMBERS[i][1]) {
+						status = false;
+					}
+					else {
+						status = true;
+					}
+				}
+			}
+		}
+		return status;
 	}
 	
 	// ***************************************************************

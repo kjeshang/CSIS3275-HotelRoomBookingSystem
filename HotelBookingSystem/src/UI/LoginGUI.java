@@ -7,15 +7,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import DAO.AdminDB;
-import DAO.GuestDB;
+import Control.AdminDB;
+import Control.GuestDB;
 import Model.Login;
-import UI.Admin.AdminGUI;
-import UI.Admin.AdminPortalGUI;
-import UI.Guest.GuestGUI;
+import UI.AdminUI.AdminGUI;
+import UI.AdminUI.AdminPortalGUI;
+import UI.GuestUI.GuestGUI;
 
 import java.awt.GridLayout;
-import java.awt.Window;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -100,26 +99,33 @@ public class LoginGUI extends JFrame implements ActionListener {
 	}
 	
 	Login login;
-	GuestDB guestDb = new GuestDB();
+	GuestDB db = new GuestDB();
 	AdminDB adminDb = new AdminDB();
-	String adminUsername;
-	String adminPassword;
 	String guestUsername;
 	String guestPassword;
+	String adminUsername;
+	String adminPassword;
 	
-
+	@Override
 	public void actionPerformed(ActionEvent e) {
+		// Hotel Guest
 		if(e.getSource() == Login_btnLogin) {
 			if(Login_rdbGuest.isSelected()) {
 				guestUsername = Login_txtUsername.getText().toString();
 				guestPassword = String.valueOf(Login_txtPassword.getPassword());
 				login = new Login(guestUsername,guestPassword);
-				boolean guestExists = guestDb.checkIfExists(login.getUsername(),login.getPassword());
+				boolean guestExists = db.checkIfExists(login.getUsername(),login.getPassword());
 				if(guestExists == false) {
 					int reply = JOptionPane.showConfirmDialog(null, "A guest with the given login information does not exist. Would you like to create a new guest account?", "New Guest", JOptionPane.YES_NO_OPTION);
 					if(reply == JOptionPane.YES_OPTION) {
-						guestDb.insertGuestLogin(login);
-						JOptionPane.showMessageDialog(null,login.toString(),"New Guest created!",JOptionPane.INFORMATION_MESSAGE);
+						boolean validNewGuestLogin = login.validLogin();
+						if(validNewGuestLogin == false) {
+							JOptionPane.showMessageDialog(null, invalidNewLogin());
+						}
+						else {
+							db.insertGuestLogin(login);
+							JOptionPane.showMessageDialog(null,login.toString(),"New Guest created!",JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
 				}
 				else {
@@ -128,28 +134,39 @@ public class LoginGUI extends JFrame implements ActionListener {
 					new GuestGUI().setVisible(true);
 				}
 			}
-			// admin login part
-			if(Login_rdbAdmin.isSelected()) {
-				adminUsername = Login_txtUsername.getText().toString();
-				adminPassword = String.valueOf(Login_txtPassword.getPassword());
-				System.out.println(adminUsername+ "  "+ adminPassword);
-				login  = new Login(adminUsername,adminPassword);
-				boolean adminExists = adminDb.checkIfExists(login.getUsername());
-				System.out.println(adminExists);
-				if(adminExists) {
-					//JOptionPane.showMessageDialog(null,"Welcome Admin!");
+		}
+		
+		// Admin
+		if(Login_rdbAdmin.isSelected()) {
+			adminUsername = Login_txtUsername.getText().toString();
+			adminPassword = String.valueOf(Login_txtPassword.getPassword());
+			System.out.println(adminUsername + "  "+ adminPassword);
+			login  = new Login(adminUsername,adminPassword);
+			boolean adminExists = adminDb.checkIfExists(login.getUsername());
+			System.out.println(adminExists);
+			if(adminExists == true) {
+				//JOptionPane.showMessageDialog(null,"Welcome Admin!");
+				dispose();
+				new AdminPortalGUI().setVisible(true);
+			}
+			else {
+				int reply = JOptionPane.showConfirmDialog(null, "An Admin with the given login information does not exist. Would you like to create a new Admin account?", "New Admin", JOptionPane.YES_NO_OPTION);
+				if(reply == JOptionPane.YES_OPTION) {
 					dispose();
-					new AdminPortalGUI().setVisible(true);
-				}
-				else {
-					int reply = JOptionPane.showConfirmDialog(null, "An Admin with the given login information does not exist. Would you like to create a new Admin account?", "New Admin", JOptionPane.YES_NO_OPTION);
-					if(reply == JOptionPane.YES_OPTION) {
-						dispose();
-						new AdminGUI().setVisible(true);
-					}
+					new AdminGUI().setVisible(true);
 				}
 			}
 		}
+	}
+	
+	private String invalidNewLogin() {
+		String message = "";
+		message += "You are unable to create an account due to one or all of the following reasons:\n";
+		message += "1. You did not enter a valid email address as your username.\n";
+		message += "2. You did not enter a password that is at least 6 characters long with a mix of numbers and letters.\n";
+		message += "\t\t2.1. The password must contain at least 1 numeric character.\n";
+		message += "\t\t2.2. The password must contain at least 4 alphabetic characters.";
+		return message;
 	}
 	
 	public static void main(String[] args) {

@@ -23,6 +23,53 @@ public class Login {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public boolean validLogin() {
+		if(checkUsername() == true && checkPassword() == true) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	private boolean checkUsername() {
+		boolean status = false;
+		if(getUsername().length() < 5) {
+			status = false;
+		}
+		else {
+			status = true;
+		}
+		return status;
+	}
+	
+	private boolean checkPassword() {
+		int numCount = 0;
+		int numChar = 0;
+		boolean status = false;
+		if(getPassword().length() < 5) {
+			status = false;
+		}
+		else {
+			for(int i = 0; i < getPassword().length(); i++) {
+				char ch = getPassword().charAt(i);
+				if(Character.isDigit(ch)) {
+					numCount++;
+				}
+				if(Character.isAlphabetic(ch)) {
+					numChar++;
+				}
+			}
+			if(numCount < 1 || numChar < 4) {
+				status = false;
+			}
+			else {
+				status = true;
+			}
+		}
+		return status;
+	}
 
 	@Override
 	public String toString() {

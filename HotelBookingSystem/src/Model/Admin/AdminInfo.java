@@ -4,41 +4,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AdminInfo {
+	
 	private String firstName;
 	private String lastName;
 	private String address;
 	private String email;
 	private String phone;
-//	private String username;
-//	private String password;
-
 	
-	public AdminInfo(String firstName, String lastName, String address, String email, String phone /*,String username, String password*/) {
+	public AdminInfo(String firstName, String lastName, String address, String email, String phone) {
 		setFirstName(firstName);
 		setLastName(lastName);
 		setAddress(address);
 		setEmail(email);
 		setPhone(phone);
-//		setUsername(username);
-//		setPassword(password);
 	}
 	
-/**	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-**/
 	public String getFirstName() {
 		return firstName;
 	}
@@ -73,10 +53,13 @@ public class AdminInfo {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-
+	
 	public boolean validInfo() {
 		boolean status = true;
-		if(getFirstName().equals("") || getLastName().equals("") || getAddress().equals("") || getEmail().equals("") || getPhone().equals("") /*|| getUsername().equals("") || getPassword().equals("") */) {
+		if(getFirstName().equals("") || getLastName().equals("") || getAddress().equals("") || getEmail().equals("") || getPhone().equals("")) {
+			status = false;
+		}
+		else if(checkEmail() == false || checkPhone() == false) {
 			status = false;
 		}
 		else {
@@ -85,28 +68,58 @@ public class AdminInfo {
 		return status;
 	}
 	
-	public boolean validatePhone(String number) {
+	private boolean checkEmail() {
+//		boolean status = false;
 		boolean status = true;
-		String regex = "[0-9]+";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(number);
-        status =  m.matches();
-        return status;
+		if(getEmail().length() < 3) {
+			status = false;
+		}
+		else {
+			if(!getEmail().endsWith(".com") && !getEmail().endsWith(".ca")) {
+				status = false;
+			}
+			else {
+				String regex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+		                "[a-zA-Z0-9_+&*-]+)*@" +
+		                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+		                "A-Z]{2,7}$";
+		        Pattern p = Pattern.compile(regex);
+		        Matcher m = p.matcher(getEmail());
+		        status =  m.matches();
+//				if(!getEmail().contains("@")) {
+//					status = false;
+//				}
+//				else {
+//					status = true;
+//				}
+			}
+		}
+		return status;
 	}
 	
-	public boolean validateEmail(String email) {
+	private boolean checkPhone() {
 		boolean status = true;
-		String regex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(email);
-        status =  m.matches();
-        
-        return status;
+		if(getPhone().length() < 10) {
+			status = false;
+		}
+		else {
+			String regex = "[0-9]+";
+	        Pattern p = Pattern.compile(regex);
+	        Matcher m = p.matcher(getPhone());
+	        status =  m.matches();
+//			for(int i = 0; i < getPhone().length(); i++) {
+//				char ch = getPhone().charAt(i);
+//				if(!Character.isDigit(ch)) {
+//					status = false;
+//				}
+//				else {
+//					status = true;
+//				}
+//			}
+		}
+		return status;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "First Name: " + getFirstName() + "\n" +
@@ -114,8 +127,6 @@ public class AdminInfo {
 			   "Address: " + getAddress() + "\n" +
 			   "Email: " + getEmail() + "\n" +
 			   "Phone: " + getPhone() + "\n"; 
-//			   " + Username: " + getUsername() + "\n" +
-//			   "Password: " + getPassword();
 	}
-
+	
 }
