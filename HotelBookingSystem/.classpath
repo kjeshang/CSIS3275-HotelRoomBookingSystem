@@ -6,8 +6,8 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/kunaljeshang/My Documents/3_Winter 2021/Software Engineering/Term Project/Kunal/mongo-java-driver-3.12.8.jar"/>
-	<classpathentry kind="lib" path="/Users/kunaljeshang/My Documents/3_Winter 2021/Software Engineering/Term Project/Kunal/jcalendar-1.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="lib" path="resources/jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="resources/mongo-java-driver-3.12.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

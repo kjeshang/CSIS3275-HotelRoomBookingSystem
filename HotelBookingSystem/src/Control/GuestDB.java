@@ -145,7 +145,9 @@ public class GuestDB extends Connection {
 		String guest = "";
 		BasicDBObject query = getGuest(guestInfo);
 		DBCursor cursor = getCollection("Guest").find(query);
-		guest = cursor.next().toString();
+		while(cursor.hasNext()) {
+			guest = cursor.next().toString();
+		}
 		return guest;
 	}
 	

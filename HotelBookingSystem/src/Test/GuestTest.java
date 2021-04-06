@@ -157,6 +157,15 @@ class GuestTest implements Details {
 		assertFalse(guestDB.checkIfReservationExists(guestBooking));
 	}
 	
+	@Test
+	@DisplayName("Should correctly interact with guest collection in terms of data retrieval")
+	void shouldRetrieveFromDBCorrectlyGuest() {
+		assertTrue(guestDB.findGuest(guestInfo).equals(""));
+		guestDB.insertGuest(guestInfo, guestBooking);
+		assertFalse(guestDB.findGuest(guestInfo).equals(""));
+		guestDB.deleteRecord(guestInfo.getPhone());
+	}
+	
 	@AfterEach
 	void tearDown() {
 		System.out.println("Guest Test " + testCount + " completed.");
