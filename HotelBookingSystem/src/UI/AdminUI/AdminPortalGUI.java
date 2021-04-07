@@ -4,7 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -31,12 +34,9 @@ import Model.Guest.GuestBooking;
 import Model.Guest.GuestInfo;
 
 @SuppressWarnings("serial")
-public class AdminPortalGUI extends JFrame {
-
+public class AdminPortalGUI extends JFrame implements ActionListener {
+	
 	private JPanel contentPane;
-	GuestInfo guestInfo;
-	GuestBooking guestBooking;
-	GuestDB db = new GuestDB();
 	private JScrollPane scrollPane;
 	private JLabel firstnamelbl;
 	private JTextField firstNametxt;
@@ -149,11 +149,12 @@ public class AdminPortalGUI extends JFrame {
 		}
 
 		newGuestbtn = new JButton("New Guest");
-		newGuestbtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				db.insertGuest(guest(), booking());
-			}
-		});
+		newGuestbtn.addActionListener(this);
+//		newGuestbtn.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				db.insertGuest(guest(), booking());
+//			}
+//		});
 		newGuestbtn.setBounds(493, 143, 117, 29);
 		contentPane.add(newGuestbtn);
 		
@@ -239,6 +240,7 @@ public class AdminPortalGUI extends JFrame {
 		lunchDinnerChkBox = new JCheckBox("Lunch & Dinner");
 		lunchDinnerChkBox.setBounds(548, 357, 130, 23);
 		contentPane.add(lunchDinnerChkBox);
+		lunchDinnerChkBox.addActionListener(this);
 		
 		accomadationlbl = new JLabel("Additional Accomadation");
 		accomadationlbl.setBounds(6, 389, 167, 16);
@@ -249,55 +251,120 @@ public class AdminPortalGUI extends JFrame {
 		contentPane.add(additionaltxt);
 		
 		deletebtn = new JButton("Delete Guest");
-		deletebtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				db.deleteRecord(getSelectedrowPhone().toString());
-			}
-		});
+		deletebtn.addActionListener(this);
+//		deletebtn.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				db.deleteRecord(getSelectedrowPhone().toString());
+//			}
+//		});
 		deletebtn.setBounds(493, 113, 117, 29);
 		contentPane.add(deletebtn);
 		
 		confirmbtn = new JButton("Confirm");
-		confirmbtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(checkDate()) {
-					db.deleteRecord(phonetxt.getText());
-					db.insertGuest(guest(), booking());
-				}
-				else {
-					JOptionPane.showMessageDialog(null, "Please mention Check In and Check Out dates");
-				}
-
-			}
-		});
+		confirmbtn.addActionListener(this);
+//		confirmbtn.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				if(checkDate()) {
+//					db.deleteRecord(phonetxt.getText());
+//					db.insertGuest(guest(), booking());
+//				}
+//				else {
+//					JOptionPane.showMessageDialog(null, "Please mention Check In and Check Out dates");
+//				}
+//
+//			}
+//		});
 		confirmbtn.setBounds(422, 417, 217, 38);
 		contentPane.add(confirmbtn);
 		
 		searchBtn = new JButton("Search");
-		searchBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				searchandAddtoTable();
-			}
-		});
+		searchBtn.addActionListener(this);
+//		searchBtn.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				searchandAddtoTable();
+//			}
+//		});
 		searchBtn.setBounds(358, 34, 117, 29);
 		contentPane.add(searchBtn);
 		
 		editbtn = new JButton("Edit Info");
-		editbtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				DBObject[] jsonrow = db.searchGuest(getSelectedrowPhone());
-				System.out.println("jsonrow" + jsonrow );
-				printInfo(jsonrow);				
-			}
-		});
+		editbtn.addActionListener(this);
+//		editbtn.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				
+//				DBObject[] jsonrow = db.searchGuest(getSelectedrowPhone());
+//				System.out.println("jsonrow" + jsonrow );
+//				printInfo(jsonrow);				
+//			}
+//		});
 		editbtn.setBounds(493, 83, 117, 29);
 		contentPane.add(editbtn);
 	}
+	
+	public AdminPortalGUI() {
+		setTitle("Admin Portal");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 700, 518);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
+		setContentPane(contentPane);
+		initialize();
+	}
+	
+	GuestInfo guestInfo;
+	GuestBooking guestBooking;
+	GuestDB db = new GuestDB();
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// New Guest Button:
+		if(e.getSource() == newGuestbtn) {
+			if(guest().validInfo() == true || booking().validBooking() == true) {
+				db.insertGuest(guest(), booking());
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "You must fill in the required fields in order to insert a new hotel guest.");
+			}
+		}
+		// Delete Guest Button:
+		if(e.getSource() == deletebtn) {
+			Object rowSelect = getSelectedrowPhone();
+			if(rowSelect != null) {
+				db.deleteRecord(rowSelect.toString());
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "You need to search & select a hotel guest in order to delete them from the database.");
+			}
+		}
+		// Confirm Button:
+		if(e.getSource() == confirmbtn) {
+			if(guest().validInfo() == true || booking().validBooking() == true) {
+				db.deleteRecord(phonetxt.getText());
+				db.insertGuest(guest(), booking());
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "You must fill in the required fields in order to update the details of an existing hotel guest.");
+			}
+		}
+		// Search Button:
+		if(e.getSource() == searchBtn) {
+			searchandAddtoTable();
+		}
+		// Edit Button:
+		if(e.getSource() == editbtn) {
+			Object rowSelect = getSelectedrowPhone();
+			if(rowSelect != null) {
+				DBObject[] jsonrow = db.searchGuest(getSelectedrowPhone());
+				System.out.println("jsonrow" + jsonrow );
+				printInfo(jsonrow);
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "You need to search & select a hotel guest in order to update their information in the database.");
+			}
+		}
+	}
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -309,20 +376,6 @@ public class AdminPortalGUI extends JFrame {
 				}
 			}
 		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public AdminPortalGUI() {
-		setTitle("Admin Portal");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 700, 518);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
-		initialize();
 	}
 	
 	public void searchandAddtoTable() {
@@ -370,8 +423,6 @@ public class AdminPortalGUI extends JFrame {
 
 	public void printInfo(DBObject[] row) {
 		
-	//	DBObject bookinginfo = row.get("booking");
-		
 		firstNametxt.setText(row[0].get("firstName").toString());
 		lastNametxt.setText(row[0].get("lastName").toString());
 		emailtxt.setText(row[0].get("email").toString());
@@ -382,28 +433,28 @@ public class AdminPortalGUI extends JFrame {
 		numOfPersonspinner.setValue(row[1].get("numPersons"));
 		roomTypeBox.setSelectedItem(row[1].get("roomType"));
 		roomNumbertxt.setText(row[1].get("roomNumber").toString());
-		if(row[1].get("roomNumber").toString() == "true")
+		if(row[1].get("lunchAndDinner").toString() == "true")
 			lunchDinnerChkBox.setSelected(true);
 		else
 			lunchDinnerChkBox.setSelected(false);
 		additionaltxt.setText(row[1].get("addAccomodations").toString());
+		
+		try {
+			Date checkIn = retrieveDate(row[1].get("checkInDate").toString());
+			Date checkOut = retrieveDate(row[1].get("checkOutDate").toString());
+			dateCheckIn.setDate(checkIn);
+			dateCheckOut.setDate(checkOut);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
-	//	try {
-	//		Date CheckIndate;
-	//		CheckIndate = new SimpleDateFormat("dd-MM-yyyy").parse((String) row[1].get("checkInDate"));
-	//		dateCheckIn.setDate(CheckIndate);
-	//		Date CheckOutdate = new SimpleDateFormat("dd-MM-yyyy").parse((String) row[1].get("checkOutDate"));
-	//		dateCheckOut.setDate(CheckOutdate);
-	//	} catch (ParseException e) {
-	//		// TODO Auto-generated catch block
-	//		e.printStackTrace();
-	//	}
-		
-	
-		
-	//	roomNumbertxt.setText(row.get("roomNumber").toString());
-		
-		
+	private Date retrieveDate(String date) throws ParseException {
+		String[] strDate = date.split(" ");
+		String rawDate = strDate[2] + " " + strDate[1] + " " + strDate[5];
+		Date simpleDate = new SimpleDateFormat("dd MMM yyyy").parse(rawDate);
+		return simpleDate;
 	}
 	
 	private GuestInfo guest() {
@@ -422,7 +473,14 @@ public class AdminPortalGUI extends JFrame {
 	private GuestBooking booking() {
 		int numPersons = Integer.parseInt(numOfPersonspinner.getValue().toString());
 		String roomType = roomTypeBox.getSelectedItem().toString();
-		int roomNumber = Integer.parseInt(roomNumbertxt.getText().toString());
+		int roomNumber;
+		try {
+			roomNumber = Integer.parseInt(roomNumbertxt.getText().toString());
+		}
+		catch(NumberFormatException e) {
+			System.out.println(e.getMessage());
+			roomNumber = 0;
+		}
 		LocalDate checkInDate = formatDate(dateCheckIn);
 		LocalDate checkOutDate = formatDate(dateCheckOut);
 		boolean lunchAndDinner;
@@ -439,24 +497,26 @@ public class AdminPortalGUI extends JFrame {
 	
 	@SuppressWarnings("deprecation")
 	private LocalDate formatDate(JDateChooser date) {
-		LocalDate retDate = LocalDate.of(date.getDate().getYear()+1900,date.getDate().getMonth()+1,date.getDate().getDate());
+		LocalDate retDate;
+		try {
+			retDate = LocalDate.of(date.getDate().getYear()+1900,date.getDate().getMonth()+1,date.getDate().getDate());
+		}
+		catch(NullPointerException e) {
+			System.out.println(e.getMessage());
+			retDate = LocalDate.now();
+		}
 		return retDate;
 	}
 	
 	private Object getSelectedrowPhone() {
-		int selectedIndex = queryOutputTbl.getSelectedRow();
-		Object searchPhoneString = queryOutputTbl.getModel().getValueAt(selectedIndex, Details.PHONE_INDEX);
+		Object searchPhoneString = null;
+		try {
+			int selectedIndex = queryOutputTbl.getSelectedRow();
+			searchPhoneString = queryOutputTbl.getModel().getValueAt(selectedIndex, Details.PHONE_INDEX);
+		}
+		catch(ArrayIndexOutOfBoundsException | NullPointerException e) {
+			e.printStackTrace();
+		}
 		return searchPhoneString;
-		
-	}
-	
-	private boolean checkDate() {
-		if(dateCheckIn.getDate() == null || dateCheckOut.getDate() == null)
-		{
-			return false;
-		}
-		else {
-			return true;
-		}
 	}
 }

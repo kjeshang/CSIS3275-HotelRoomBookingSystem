@@ -218,7 +218,7 @@ public class GuestGUI extends JFrame implements ActionListener,Details {
 		Guest_lblCheckOutDate = new JLabel("Check-Out Date");
 		Guest_lblCheckOutDate.setBounds(28, 480, 104, 16);
 		contentPane.add(Guest_lblCheckOutDate);
-		// Guest_dateCheckOut <-
+		// Guest_dateCheckOut
 		Guest_dateCheckOut = new JDateChooser();
 		Guest_dateCheckOut.setBounds(148, 477, 149, 26);
 		contentPane.add(Guest_dateCheckOut);
@@ -345,7 +345,7 @@ public class GuestGUI extends JFrame implements ActionListener,Details {
 		String message = "";
 		message += "Invalid hotel guest background information. Please provide valid background information and try again. The following conditions must be fulfilled in order to proceed:\n";
 		message += "1. All required fields must be filled.\n";
-		message += "2. A valid email address must be provided (e.g.janedoe@gmail.com)\n";
+		message += "2. A valid email address must be provided (e.g. janedoe@gmail.com)\n";
 		message += "3. A phone number must contain 10 numeric characters.";
 		return message;
 	}

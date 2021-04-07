@@ -180,7 +180,9 @@ public class AdminGUI extends JFrame implements ActionListener,Details {
 	
 	AdminInfo adminInfo;
 	AdminDB db = new AdminDB();
-
+	String adminUsername;
+	String adminPassword;
+	Login adminLogin;
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -190,16 +192,23 @@ public class AdminGUI extends JFrame implements ActionListener,Details {
 			String confPass = String.valueOf(Admin_txtConfPassword.getPassword());
 			if(pass.equals(confPass))
 			{
+				adminUsername = Admin_txtUsername.getText().toString();
+				adminPassword = String.valueOf(Admin_txtPassword.getPassword());
+				adminLogin = new Login(adminUsername, adminPassword);
 				adminInfo = admin();
-				System.out.println(adminInfo.toString());
-				if(adminInfo.validInfo() == false) {
-					JOptionPane.showMessageDialog(null, "Please provide all requested information.");
+				boolean adminLoginExists = db.checkIfExists(adminUsername);
+				if(adminInfo.validInfo() == false || adminLogin.validLogin() == false) {
+					JOptionPane.showMessageDialog(null, invalidNewAdminInfo());
+				}
+				else if(adminLoginExists == true) {
+					JOptionPane.showMessageDialog(null,"The provided hotel admin login credentials are already taken. Please provide alternate username and password to create a hotel admin account.");
 				}
 				else {
 					int reply1 = JOptionPane.showConfirmDialog(null, adminInfo.toString(), "Please confirm your information", JOptionPane.YES_NO_OPTION);
 					if(reply1 == JOptionPane.YES_OPTION) {
 						db.insertAdmin(adminInfo);
-						insertCredentials(Admin_txtUsername.getText().toString(),pass);
+						db.insertAdminLogin(adminLogin);
+						//insertCredentials(Admin_txtUsername.getText().toString(),pass);
 						//showConfirmation();
 						dispose();
 						new LoginGUI().setVisible(true);
@@ -245,11 +254,24 @@ public class AdminGUI extends JFrame implements ActionListener,Details {
 //		return message;
 //	}
 	
-	private void insertCredentials(String username, String password)
-	{
-		Login login = new Login(username,password);
-		db.insertAdminLogin(login);
+	private String invalidNewAdminInfo() {
+		String message = "";
+		message += "Invalid hotel admin login & background information. Please provide valid information and try again. The following conditions must be fulfilled in order to proceed:\n";
+		message += "1. You need to enter a valid email address as your login username.\n";
+		message += "2. You need to enter a login password that is at least 6 characters long with a mix of numbers and letters.\n";
+		message += "\t\t2.1. The password must contain at least 1 numeric character.\n";
+		message += "\t\t2.2. The password must contain at least 4 alphabetic characters.\n";
+		message += "3. All required background information fields must be filled.\n";
+		message += "4. A valid email address must be provided (e.g. janedoe@gmail.com)\n";
+		message += "5. A phone number must contain 10 numeric characters.";
+		return message;
 	}
+	
+//	private void insertCredentials(String username, String password)
+//	{
+//		Login login = new Login(username,password);
+//		db.insertAdminLogin(login);
+//	}
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {

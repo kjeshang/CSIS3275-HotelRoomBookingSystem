@@ -75,8 +75,10 @@ public class AdminDB extends Connection {
 	public String findAdmin(AdminInfo adminInfo) {
 		String admin = "";
 		BasicDBObject query = getAdmin(adminInfo);
-		DBCursor cursor = getCollection("Guest").find(query);
-		admin = cursor.next().toString();
+		DBCursor cursor = getCollection("Admin").find(query);
+		while(cursor.hasNext()) {
+			admin = cursor.next().toString();
+		}
 		return admin;
 	}
 		
@@ -89,5 +91,11 @@ public class AdminDB extends Connection {
 		obj.add(new BasicDBObject("phone", adminInfo.getPhone()));
 		andQuery.put("$and", obj);
 		return andQuery;
+	}
+	
+	public void deleteAdminInfo(String phone) {
+		BasicDBObject deletequery = new BasicDBObject();
+		deletequery.put("phone", phone);
+		getCollection("Admin").remove(deletequery);
 	}
 }
